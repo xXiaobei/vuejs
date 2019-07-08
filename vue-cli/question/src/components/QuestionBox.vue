@@ -8,11 +8,13 @@
             Choose the right answer：
         </h1>
         <b-list-group>
-            <b-list-group-item>Cras justo odio</b-list-group-item>
-            <b-list-group-item>Dapibus ac facilisis in</b-list-group-item>
-            <b-list-group-item>Morbi leo risus</b-list-group-item>
-            <b-list-group-item>Porta ac consectetur ac</b-list-group-item>
-            <b-list-group-item>Vestibulum at eros</b-list-group-item>
+            <b-list-group-item
+                v-for="(answer, index) in answers"
+                :key="index"
+                @click.prevent="selectAnswer(index)"
+                :class="[selectedIndex === index ? 'selected' : '']"
+                >{{ answer }}
+            </b-list-group-item>
         </b-list-group>
         <div class="btnContainer">
             <b-button variant="danger">Submit</b-button>
@@ -27,7 +29,31 @@ export default {
     props: {
         next: Function,
         currentQuestion: Object
-    }
+    },
+    //提供变量供本组件使用，它的子组件也可以通过props来接受该值
+    data() {
+        return {
+            selectedIndex: null
+        };
+    },
+    //属性计算，基于响应式依赖进行缓存，只在相关响应依赖改变时，才会重新计算值
+    //与绑定方法不同的时，会产生缓存，不会在调用组件时刷新数据
+    computed: {
+        //计算answers属性
+        answers() {
+            //用es6的 扩展运算符 实现数组的深拷贝
+            let answers = [...this.currentQuestion.incorrect_answers];
+            answers.push(this.currentQuestion.correct_answer);
+            return answers;
+        }
+    },
+    //绑定方法
+    methods: {
+        selectAnswer(index) {
+            this.selectedIndex = index;
+        }
+    },
+    mounted: function() {}
 };
 </script>
 
@@ -44,6 +70,15 @@ export default {
 .list-group-item {
     cursor: pointer;
     text-align: left;
+}
+.selected {
+    background-color: lightcoral;
+}
+.correct {
+    background-color: lightgreen;
+}
+.incorrect {
+    background-color: red;
 }
 </style>
 
