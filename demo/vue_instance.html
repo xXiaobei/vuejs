@@ -1,0 +1,73 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>vue实例</title>
+    <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+</head>
+
+<body>
+
+
+
+    <script type="text/javascript">
+        //当一个 Vue 实例被创建时，它将 data 对象中的所有的属性加入到 Vue 的响应式系统中。当这些属性的值发生改变时，视图将会产生“响应”，即匹配更新为新的值。
+        //Vue实例的属性与方法
+        //________________________________________
+        let d = { id: 1, name: "测试数据" }
+        let vm = new Vue({
+            data: d
+        });
+        console.log(vm.name == d.name);
+        d.name = "修改数据，查看Vue实例vm是否改变";
+        console.log("d.name：" + d.name);
+        console.log("vm.name：" + vm.name);
+        vm.name = "修改Vue实例vm中的name属性的值，查看对象d的name属性是否改变";
+        console.log("vm.name：" + vm.name);
+        console.log("d.name：" + d.name);
+        //当这些数据改变时，视图会进行重渲染。值得注意的是只有当实例被创建时 data 中存在的属性才是响应式的。
+        //也就是说如果你添加一个新的属性，比如：vm.b = 'hi'那么对 b 的改动将不会触发任何视图的更新。
+        //Vue实例绑定属性时，存在例外 object.freeze()
+        //这里唯一的例外是使用 Object.freeze()，这会阻止修改现有的属性，也意味着响应系统无法再追踪变化。
+        //let obj = { foo: "bar" };
+        //Object.freeze(obj);
+        //new Vue({ el: "#ele_id", data: obj })
+
+        //除了数据属性，Vue 实例还暴露了一些有用的实例属性与方法。它们都有前缀 $，以便与用户定义的属性区分开来。例如：
+        //vm.$data == d; //true
+        //vm.$el = $("#ele_id")[0]; // true
+
+        //watch 为一个实例方法，可用于检测属性值的改变
+        vm.$watch('name', function (newValue, oldValue) {
+            //此回调在 vm.name 改变后调用
+            console.log("vm.name 值 从 " + oldValue + " 变为 " + newValue);
+        });
+
+        //Vue的生命周期
+        //___________________________________
+        //created 钩子，在Vue创建时触发
+        new Vue({
+            data: {
+                a: 1
+            },
+            created: function () {
+                //this 指向 vm 实例
+                console.log("a is " + this.a);
+            },
+        });
+        //也有一些其它的钩子，在实例生命周期的不同阶段被调用，
+        //如 mounted、updated 和 destroyed。生命周期钩子的 this 上下文指向调用它的 Vue 实例。
+        //注意::::::::::::::::::::::::::
+        //不要在属性或者回调函数中，使用箭头函数（胖函数），因为箭头函数中没有提供this
+        //箭头函数中的this会作为变量，一直向上一级词法作用域查找，直到找到为止，
+        //经常会引发：Uncaught TypeError: Cannot read property of undefined
+        //或者，Uncaught TypeError: this.myMethod is not a function 之类的错误
+        //::::::::::::::::::::::::::
+        //Vue实例的生命周期体现 
+        //见文摘：https://cn.vuejs.org/v2/guide/instance.html#%E5%AE%9E%E4%BE%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E9%92%A9%E5%AD%90
+
+
+    </script>
+</body>
+
+</html>

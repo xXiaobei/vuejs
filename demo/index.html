@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Vue 官网实例</title>
+  <script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+</head>
+
+<body>
+  <!-- 声明式渲染 -->
+  <div id="app">
+    <p>{{ message }}</p>
+  </div>
+
+  <!-- 绑定元素特性 -->
+  <!-- v-bind：将这个元素节点的 title 特性和 Vue 实例的 message 属性保持一致 -->
+  <div id="app-2">
+    <span v-bind:title="message">
+      鼠标悬停，查看动态绑定的title信息！
+    </span>
+  </div>
+
+  <!-- 条件与循环 -->
+  <div id="app-3">
+    <p v-if="seen">符合条件，我将显示出来。</p>
+  </div>
+
+  <!-- v-for：渲染项目列表 -->
+  <div id="app-4">
+    <ol>
+      <!-- <li v-for="(t, i) in students" :key="i"> </li>-->
+      <li v-for="s in students">
+        {{ s.name }}
+      </li>
+    </ol>
+  </div>
+
+  <!-- 处理用户输入 -->
+  <div id="user">
+    <p>{{message}}</p>
+    <button v-on:click="handleMessage">逆转消息</button>
+  </div>
+
+  <!-- v-model：双向绑定 -->
+  <div id="vm">
+    <p>{{message}}</p>
+    <input v-model="message">
+  </div>
+
+  <!-- vue 组件 -->
+  <div id="todo">
+    <ol>
+      <todo-item v-for="item in todoList" v-bind:todo="item" v-bind:key="item.id"></todo-item>
+    </ol>
+  </div>
+
+  <script>
+    //声明式渲染
+    new Vue({
+      el: '#app',
+      data: {
+        message: 'Hello Vue.js.!'
+      }
+    });
+    //绑定元素特性
+    const app2 = new Vue({
+      el: "#app-2",
+      data: {
+        message: "页面加载于 " + new Date().toLocaleDateString()
+      }
+    });
+    //条件与循环
+    const app3 = new Vue({
+      el: "#app-3",
+      data: {
+        seen: true
+      }
+    });
+    //for循环
+    const app4 = new Vue({
+      el: "#app-4",
+      data: {
+        students: [{
+            name: "小明"
+          },
+          {
+            name: "小王"
+          },
+          {
+            name: "小张"
+          }
+        ]
+      }
+    });
+    //用户输入
+    const user = new Vue({
+      el: "#user",
+      data: {
+        message: "Hello Vue.js"
+      },
+      methods: {
+        handleMessage: function() {
+          this.message = this.message.split(' ').reverse().join(' ')
+        }
+      }
+    });
+    //双向绑定
+    const vm = new Vue({
+      el: "#vm",
+      data: {
+        message: "hello world"
+      }
+    });
+    //Vue组件定义
+    Vue.component('todo-item', {
+      props: ['todo'],
+      template: '<li>{{ todo.text }} + {{todo.id}}</li>'
+    });
+    //绑定dom（绑定组件？）
+    const c_todo = new Vue({
+      el: "#todo",
+      data: {
+        todoList: [{
+            id: 0,
+            text: "起床"
+          },
+          {
+            id: 1,
+            text: "洗脸"
+          },
+          {
+            id: 2,
+            text: "吃早餐"
+          }
+        ]
+      }
+    });
+  </script>
+</body>
+
+</html>
