@@ -9,31 +9,46 @@
         </h1>
         <b-list-group>
             <b-list-group-item
-                v-for="(answer, index) in answers"
+                v-for="(answer, index) in shuffledAnswers"
                 :key="index"
                 @click.prevent="selectAnswer(index)"
-                :class="[selectedIndex === index ? 'selected' : '']"
-                >{{ answer }}
+                :class="[selectedIndex == index ? 'selected' : '']"
+                v-html="answer"
+            >
             </b-list-group-item>
         </b-list-group>
         <div class="btnContainer">
-            <b-button variant="danger">Submit</b-button>
+            <b-button
+                variant="danger"
+                @click="submitAnswer"
+                :disabled="selectedIndex === null || answered"
+            >
+                Submit
+            </b-button>
             <b-button variant="success" @click="next">Next</b-button>
         </div>
     </div>
 </template>
 
 <script>
+//导入第三方的js工具包
+//lodash 可以极大程度的简化数据，字符串，对象的操作，无任何依赖项
+import _ from "lodash";
+
 export default {
     //props中申明的变量用于接收父组件传递过来的值
     props: {
         next: Function,
+        increment: Function,
         currentQuestion: Object
     },
     //提供变量供本组件使用，它的子组件也可以通过props来接受该值
     data() {
         return {
-            selectedIndex: null
+            correctIndex: null,
+            selectedIndex: null,
+            shuffledAnswers: [],
+            answered: false
         };
     },
     //属性计算，基于响应式依赖进行缓存，只在相关响应依赖改变时，才会重新计算值
@@ -47,10 +62,58 @@ export default {
             return answers;
         }
     },
+    //监听属性值的改变
+    watch: {
+        currentQuestion: {
+            //绑定监听时，立即执行handler方法 immediate: true
+            //watch的handler默认只有在属性的值发生改变时才会触发（故初次绑定时不会触发）
+            immediate: true,
+            handler() {
+                this.answered = false;
+                this.selectedIndex = null;
+                this.shuffleAnswers();
+            }
+        }
+    },
     //绑定方法
     methods: {
+        //选择答案
         selectAnswer(index) {
             this.selectedIndex = index;
+        },
+        //提交答案
+        submitAnswer() {
+            let isCorrect = false;
+            let tipsMessage =
+                "<span style='color:red;' class='float-right'>Oops, Incrrect</span>";
+            if (this.selectedIndex === this.correctIndex) {
+                isCorrect = true;
+                tipsMessage =
+                    "<span style='color:green;'  class='float-right'>Yes, You Got It.</span>";
+            } else {
+                this.shuffledAnswers[this.correctIndex] +=
+                    "<span class='float-right text-warning'>Right answer here</span>";
+            }
+
+            this.answered = true;
+            this.increment(isCorrect); //记录选择的次数
+            this.shuffledAnswers[this.selectedIndex] += tipsMessage;
+            console.log(
+                this.shuffledAnswers[this.selectedIndex] +
+                    " ------" +
+                    this.shuffledAnswers[this.correctIndex]
+            );
+        },
+        //打乱答案数组顺序
+        shuffleAnswers() {
+            let answer = [
+                ...this.currentQuestion.incorrect_answers,
+                this.currentQuestion.correct_answer
+            ];
+            this.shuffledAnswers = _.shuffle(answer);
+            this.correctIndex = this.shuffledAnswers.indexOf(
+                this.currentQuestion.correct_answer
+            );
         }
     },
     mounted: function() {}
@@ -72,13 +135,13 @@ export default {
     text-align: left;
 }
 .selected {
-    background-color: lightcoral;
+    background-color: lightgoldenrodyellow !important;
 }
 .correct {
-    background-color: lightgreen;
+    background-color: lightgreen !important;
 }
 .incorrect {
-    background-color: red;
+    background-color: red !important;
 }
 </style>
 
