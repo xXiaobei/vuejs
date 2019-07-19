@@ -18,7 +18,12 @@ import Pet from "./views/Pet";
  */
 Vue.use(Router);
 
+/**
+ * mode:history可以去掉url路径中的＃(官方的解释？)
+ */
 export default new Router({
+	mode: "history",
+	base: process.env.BASE_URL,
 	routes: [
 		{
 			path: "/",

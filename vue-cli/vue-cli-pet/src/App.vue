@@ -1,5 +1,6 @@
 <template>
-	<div id="app">
+	<div id="app" class="container">
+		<img alt="Vue logo" src="./assets/dog.png" />
 		<div id="nav">
 			<router-link to="/">Home</router-link> |
 			<router-link to="/cat">Cat</router-link> |
@@ -11,6 +12,14 @@
 </template>
 
 <style lang="scss">
+img {
+	width: 160px;
+	height: 160px;
+	margin-top: 20px;
+	border-radius: 50%;
+	border: #42b983 1px solid;
+	box-shadow: 10px 10px 5px #888888;
+}
 #app {
 	font-family: "Avenir", Helvetica, Arial, sans-serif;
 	-webkit-font-smoothing: antialiased;
